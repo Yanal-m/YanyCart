@@ -12,12 +12,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -28,9 +22,23 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
+// get all products
+app.MapGet("/products", async (AppDbContext db) =>
+    await db.Products.ToListAsync());
+
+
 
 //var summaries = new[]
 //{
