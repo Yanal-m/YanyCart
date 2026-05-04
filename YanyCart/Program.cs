@@ -49,6 +49,26 @@ app.MapPost("/products", async (AppDbContext db, Product product) =>
     return Results.Created($"/products/{product.Id}", product);
 });
 
+// add a cart
+
+app.MapPost("/carts", async (AppDbContext db, ShoppingCart cart) =>
+{
+    db.ShoppingCarts.Add(cart);
+    await db.SaveChangesAsync();
+    return Results.Created($"/carts/{cart.Id}", cart);
+});
+
+// get cart by id
+app.MapGet("/carts/{id}", async (AppDbContext db, int id) =>
+{
+    var cart = await db.ShoppingCarts
+        .Include(c => c.Items)
+        .ThenInclude(i => i.Product)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    return cart is not null ? Results.Ok(cart) : Results.NotFound();
+});
+
 
 //var summaries = new[]
 //{
