@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyShoppingCart.Models;
+using YanyCart.Models;
 
-namespace MyShoppingCart.Data
+namespace YanyCart.Data
 {
     public class AppDbContext : DbContext
     {

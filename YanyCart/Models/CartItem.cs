@@ -1,4 +1,4 @@
-﻿namespace MyShoppingCart.Models
+﻿namespace YanyCart.Models
 {
     public class CartItem
     {
