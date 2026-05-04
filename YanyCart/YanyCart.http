@@ -1,0 +1,6 @@
+@YanyCart_HostAddress = http://localhost:5071
+
+GET {{YanyCart_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
