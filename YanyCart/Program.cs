@@ -69,6 +69,50 @@ app.MapGet("/carts/{id}", async (AppDbContext db, int id) =>
     return cart is not null ? Results.Ok(cart) : Results.NotFound();
 });
 
+// update cart 
+app.MapPut("/carts/{id}", async (AppDbContext db, int id, ShoppingCart updatedCart) =>
+{
+    var cart = await db.ShoppingCarts
+        .Include(c => c.Items)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    if (cart is null)
+        return Results.NotFound();
+
+    cart.UserId = updatedCart.UserId;
+
+    // Remove old items
+    db.CartItems.RemoveRange(cart.Items);
+
+    // Add new items safely
+    cart.Items = updatedCart.Items.Select(i => new CartItem
+    {
+        ProductId = i.ProductId,
+        Quantity = i.Quantity
+    }).ToList();
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(cart);
+});
+
+
+// remove cart
+app.MapDelete("/carts/{id}", async (AppDbContext db, int id) =>
+{
+    var cart = await db.ShoppingCarts
+        .Include(c => c.Items)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    if (cart is null)
+        return Results.NotFound();
+    db.CartItems.RemoveRange(cart.Items);
+    db.ShoppingCarts.Remove(cart);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
 
 //var summaries = new[]
 //{
