@@ -1,8 +1,8 @@
-//using SQLitePCL;
+using SQLitePCL;
 using Microsoft.EntityFrameworkCore;
 using YanyCart.Data;
 var builder = WebApplication.CreateBuilder(args);
-//Batteries.Init();
+Batteries.Init();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
