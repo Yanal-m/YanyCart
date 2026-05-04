@@ -1,6 +1,7 @@
-using SQLitePCL;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using YanyCart.Data;
+using YanyCart.Models;
 var builder = WebApplication.CreateBuilder(args);
 Batteries.Init();
 
@@ -38,6 +39,15 @@ using (var scope = app.Services.CreateScope())
 app.MapGet("/products", async (AppDbContext db) =>
     await db.Products.ToListAsync());
 
+
+// post product
+
+app.MapPost("/products", async (AppDbContext db, Product product) =>
+{
+    db.Products.Add(product);
+    await db.SaveChangesAsync();
+    return Results.Created($"/products/{product.Id}", product);
+});
 
 
 //var summaries = new[]
